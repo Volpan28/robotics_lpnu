@@ -62,6 +62,6 @@ ros2 run lab5 obstacle_avoidance --ros-args -p goal_x:=2.0 -p goal_y:=-2.0
 
 ## Deliverables
 
-1. **Implemented** `obstacle_avoidance.py` (potential fields or chosen algorithm)
-2. **Screenshot or short video** of the robot reaching the goal while avoiding obstacles
+1. **Implemented** `obstacle_avoidance.py` together with any additioanl logic (potential fields or chosen algorithm)
+2. **Screenshots** of the robot reaching the goal while avoiding obstacles
 3. **Brief description** of your algorithm, parameters, and any issues
