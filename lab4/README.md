@@ -1,16 +1,11 @@
-# Lab 4: Dead Reckoning
+# Laboratory Work 4: Dead Reckoning
 
-## Learning Goals
+## Overview
+This repository contains the solution for Lab 4. It explores the concept of **Dead Reckoning** — estimating a robot's position by mathematically integrating its velocity commands (`/cmd_vel`) over time. The estimated trajectory is then compared against the Gazebo simulator's ground truth odometry (`/odom`) to visualize and analyze positional drift.
 
-- Integrate velocity commands to estimate pose (dead reckoning)
-- Compare with Gazebo ground truth
-- Understand drift
 
-**Reference:** [Motion Model for Differential Drive](https://www.roboticsbook.org/S52_diffdrive_actions.html)
-
----
-
-## Setup
+### Step 1: Build the Workspace
+Inside the Docker container, compile the `lab4` package (and `lab3` since we use its movement scripts) and source the workspace:
 
 ```bash
 cd /opt/ws
@@ -18,36 +13,33 @@ colcon build --packages-select lab3 lab4
 source install/setup.bash
 ```
 
----
+### Step 2: Launch Simulation (Terminal 1)
+Launch the TurtleBot3 room environment, the dead reckoning node, the path publisher, and RViz2 for visualization:
 
-## Task
-
-### 1. Implement dead reckoning
-
-Edit `lab4/dead_reckoning.py` — implement the TODO. Use the reference above for the pose update from `(v, ω)`.
-
-### 2. Launch TurtleBot3
-
-**Terminal 1:**
 ```bash
 ros2 launch lab4 dead_reckoning_bringup.launch.py
 ```
 
-### 3. Run circle trajectory
+### Important: Ensure you press the Play [▶] button in Gazebo and wait a few seconds for the simulation physics to stabilize before running the movement script. In RViz2, you may want to uncheck Odometry in the Displays panel to hide the large red arrows
 
-**Terminal 2:**
+### Step 3: Run Trajectory (Terminal 2)
+Open a new terminal, enter the container (./scripts/cmd bash), source the setup file, and run the circle trajectory:
+
 ```bash
+source /opt/ws/install/setup.bash
 ros2 run lab3 circle_path
 ```
 
-### 4. Observe
+## Key Implementations
+- dead_reckoning.py: A custom ROS2 node that subscribes to /cmd_vel and calculates the robot's pose using standard differential drive kinematics equations ($x += v \cdot \cos(\theta) \cdot dt$, etc.). It publishes the calculated path to /path_dr.
 
-RViz shows two paths: odom (ground truth) and dead reckoning. Terminal logs error.
+- Initial Pose Synchronization: To ensure an accurate comparison, the dead reckoning node waits for the first /odom message to sync its mathematical starting position with the robot's actual physical position in Gazebo.
 
----
+## Observations: Understanding Drift
+When running the simulation, you will observe two lines in RViz2:
 
-## Deliverables
+- Green Line (/path): The ground truth path from Gazebo's odometry.
 
-1. Implemented `dead_reckoning.py`
-2. Screenshot of both paths in RViz
-3. Brief answer: Why does dead reckoning drift?
+- Red Line (/path_dr): The mathematically estimated path (Dead Reckoning).
+
+As the robot executes the circular path, the red line will gradually diverge from the green line. This phenomenon is called drift. It occurs because dead reckoning assumes perfect and instantaneous execution of velocity commands. In reality, factors such as physical motor inertia (acceleration delays), wheel slippage, and simulation Real-Time Factor (RTF) discrepancies cause tiny errors. Because dead reckoning builds upon its previous calculations, these microscopic errors accumulate continuously, leading to a visible deviation over time.
