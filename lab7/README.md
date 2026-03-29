@@ -30,7 +30,7 @@ After completing this laboratory, you should be able to:
 - [TF2](https://docs.ros.org/en/jazzy/Tutorials/Intermediate/Tf2/Tf2-Main.html) (transform library) 
 - [URDF](https://docs.ros.org/en/jazzy/Tutorials/Intermediate/URDF/URDF-Main.html) and Xacro
 
-### 3.3 RTR manipulator and kinematics
+### 3.1 RTR manipulator and kinematics
 
 The **RTR** (Revolute–Translational–Revolute) manipulator is a three-degree-of-freedom serial chain: base rotation about a vertical axis, translation along that axis, and a revolute elbow in a vertical plane. The photograph below illustrates a representative configuration; the simplified schematic under it matches the joint ordering used in the provided URDF.
 
@@ -48,15 +48,12 @@ The **RTR** (Revolute–Translational–Revolute) manipulator is a three-degree-
 
 **Forward kinematics** — end-effector position $\mathbf{p} = (x,y,z)^T$ in the base frame:
 
-$$
-\mathbf{p}
-=
+$$ \mathbf{p} =
 \begin{pmatrix}
 \cos\theta_1\,(l_3\cos\theta_3 + l_2) \\
 \sin\theta_1\,(l_3\cos\theta_3 + l_2) \\
 l_3\sin\theta_3 + \theta_2
-\end{pmatrix}.
-$$
+\end{pmatrix}.$$
 
 Python helpers for $\mathbf{p}$, the orientation quaternion, the combined pose ``rtr_end_effector_transform`` (used by the TF2 demos), and TF-vs-analytic checks live in `lab7/rtr_kinematics.py`.
 
