@@ -37,7 +37,7 @@ class Figure8Path(Node):
 
     def run_circle(self, v, w):
         dt = 1.0 / max(float(self.get_parameter("rate_hz").value), 1.0)
-        duration = (2.0 * math.pi / max(abs(w), 1e-6)) * 1.37
+        duration = (2.0 * math.pi / max(abs(w), 1e-6)) * 1.60
         
         msg = TwistStamped()
         msg.header.frame_id = 'base_link'
@@ -51,7 +51,6 @@ class Figure8Path(Node):
             rclpy.spin_once(self, timeout_sec=0.0)
             time.sleep(dt)
 
-        # Зупиняємо робота після кола на коротку мить
         stop_msg = TwistStamped()
         self.pub.publish(stop_msg)
         time.sleep(0.5)

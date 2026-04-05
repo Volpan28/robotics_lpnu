@@ -17,8 +17,7 @@ class ObstacleAvoidanceNode(Node):
         self.declare_parameter("goal_x", 3.0)
         self.declare_parameter("goal_y", 3.0)
         
-        # Параметри алгоритму
-        self.k_att = 1.0        # Залишаємо як є
+        self.k_att = 1.0       
         self.k_rep = 0.01       # ЗМЕНШУЄМО (було 0.05) - сила відштовхування слабша
         self.safe_dist = 0.4    # ЗМЕНШУЄМО (було 0.8) - реагує лише зблизька
 
@@ -72,6 +71,7 @@ class ObstacleAvoidanceNode(Node):
         while angle_to_goal_local > math.pi: angle_to_goal_local -= 2.0 * math.pi
         while angle_to_goal_local < -math.pi: angle_to_goal_local += 2.0 * math.pi
 
+        # Формула Притягання до цілі
         F_x = self.k_att * math.cos(angle_to_goal_local)
         F_y = self.k_att * math.sin(angle_to_goal_local)
 
@@ -81,11 +81,16 @@ class ObstacleAvoidanceNode(Node):
                 continue
             if r < self.safe_dist:
                 angle = self.scan_angle_min + i * self.scan_angle_increment
+                # Математична формула сили відштовхування, що зростає при наближенні
                 rep_mag = self.k_rep * (1.0 / r - 1.0 / self.safe_dist) * (1.0 / (r**2))
+                # Віднімаємо цю силу від нашого загального вектора руху (F_x, F_y)
                 F_x -= rep_mag * math.cos(angle)
                 F_y -= rep_mag * math.sin(angle)
 
         # 3. Конвертація вектора сил у швидкості
+        # Робот не розуміє "векторів сил", він розуміє лише швидкості. 
+        # Тому ми перетворюємо силу F_x (яка тягне його вперед/назад) у лінійну швидкість v, 
+        # а співвідношення сил F_y та F_x (через арктангенс) — у кут повороту w:
         v = F_x
         w = math.atan2(F_y, F_x) * 2.0
 

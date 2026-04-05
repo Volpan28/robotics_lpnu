@@ -80,7 +80,7 @@ class DeadReckoningNode(Node):
         self.gt_x = msg.pose.pose.position.x
         self.gt_y = msg.pose.pose.position.y
 
-        #беремо реальні координати робота як стартову точку для математики!
+        #реальні координати робота як стартову точку для математики
         if not self.initialized:
             self.x = self.gt_x
             self.y = self.gt_y
@@ -89,7 +89,7 @@ class DeadReckoningNode(Node):
             cosy = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
             self.theta = math.atan2(siny, cosy)
             self.initialized = True
-            self.get_logger().info("Синхронізовано стартову позицію!")
+            self.get_logger().info("Синхронізовано стартову позицію")
         
         error = math.sqrt((self.x - self.gt_x)**2 + (self.y - self.gt_y)**2)
         self.get_logger().info(f"Drift Error (Дрифт): {error:.3f} meters", throttle_duration_sec=2.0)
